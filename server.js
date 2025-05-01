@@ -8,7 +8,8 @@ dotenv.config();
 
 // Initialize express app
 const app = express();
-const PORT = process.env.PORT || 5000;
+// Railway will provide PORT environment variable
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors({
@@ -33,12 +34,18 @@ app.use('/gemini', geminiRoutes);
 
 // Base route
 app.get('/', (req, res) => {
-  res.send('ReproMitra API is running');
+  res.json({
+    status: 'ok',
+    message: 'ReproMitra API is running',
+    port: PORT,
+    env: process.env.NODE_ENV
+  });
 });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('Error:', err.message);
+  console.error('Stack:', err.stack);
   res.status(500).json({
     success: false,
     message: 'Something went wrong!',
@@ -49,11 +56,21 @@ app.use((err, req, res, next) => {
 // Start server
 const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
+  console.log('Environment:', process.env.NODE_ENV);
 });
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
   console.log('UNHANDLED REJECTION! 💥 Shutting down...');
+  console.error(err);
+  server.close(() => {
+    process.exit(1);
+  });
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (err) => {
+  console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
   console.error(err);
   server.close(() => {
     process.exit(1);
