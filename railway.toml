@@ -1,13 +1,13 @@
 [build]
-builder = "nixpacks"
-buildCommand = "apt-get update && apt-get install -y build-essential && npm install"
+builder = "NIXPACKS"
+buildCommand = "npm install"
 
 [deploy]
 startCommand = "npm start"
-healthcheckPath = "/"
+healthcheckPath = "/health"
 healthcheckTimeout = 100
-restartPolicyType = "on_failure"
-restartPolicyMaxRetries = 10
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
 
 [deploy.env]
 NODE_ENV = "production"
