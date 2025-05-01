@@ -1,0 +1,14 @@
+[build]
+builder = "nixpacks"
+buildCommand = "apt-get update && apt-get install -y build-essential && npm install"
+
+[deploy]
+startCommand = "npm start"
+healthcheckPath = "/"
+healthcheckTimeout = 100
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
+
+[deploy.env]
+NODE_ENV = "production"
+PORT = "5000" 
